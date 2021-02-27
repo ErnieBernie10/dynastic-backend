@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace dynastic_backend.Controllers
+namespace Dynastic.Controllers
 {
     [ApiController]
     [Route("[controller]")]

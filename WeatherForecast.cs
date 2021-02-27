@@ -1,6 +1,6 @@
 using System;
 
-namespace dynastic_backend
+namespace Dynastic
 {
     public class WeatherForecast
     {
