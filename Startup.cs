@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Dynastic.Models;
+using Dynastic.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -29,8 +30,12 @@ namespace Dynastic
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers();
-            services.AddDbContext<DynasticContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DynasticConnection")));
+            services.AddControllers()
+                // .AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve);
+                .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+            services.AddDbContext<DynasticContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DynasticConnection"))).AddLogging();
+            services.AddScoped<DynastyRepository>();
+            services.AddScoped<PersonRepository>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "dynastic_backend", Version = "v1" });

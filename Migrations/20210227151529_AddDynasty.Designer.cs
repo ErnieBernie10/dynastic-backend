@@ -3,15 +3,17 @@ using System;
 using Dynastic.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Dynastic.Migrations
 {
     [DbContext(typeof(DynasticContext))]
-    partial class DynasticContextModelSnapshot : ModelSnapshot
+    [Migration("20210227151529_AddDynasty")]
+    partial class AddDynasty
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -56,7 +58,7 @@ namespace Dynastic.Migrations
                     b.Property<Guid?>("DynastyId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("FatherId")
+                    b.Property<Guid>("FatherId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Firstname")
@@ -71,7 +73,7 @@ namespace Dynastic.Migrations
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<Guid?>("MotherId")
+                    b.Property<Guid>("MotherId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
@@ -101,12 +103,16 @@ namespace Dynastic.Migrations
                         .HasForeignKey("DynastyId");
 
                     b.HasOne("Dynastic.Models.Person", "Father")
-                        .WithMany("FathersChildren")
-                        .HasForeignKey("FatherId");
+                        .WithMany("Children")
+                        .HasForeignKey("FatherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Dynastic.Models.Person", "Mother")
-                        .WithMany("MothersChildren")
-                        .HasForeignKey("MotherId");
+                        .WithMany()
+                        .HasForeignKey("MotherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Father");
 
@@ -120,9 +126,7 @@ namespace Dynastic.Migrations
 
             modelBuilder.Entity("Dynastic.Models.Person", b =>
                 {
-                    b.Navigation("FathersChildren");
-
-                    b.Navigation("MothersChildren");
+                    b.Navigation("Children");
                 });
 #pragma warning restore 612, 618
         }

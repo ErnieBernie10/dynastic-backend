@@ -3,15 +3,17 @@ using System;
 using Dynastic.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Dynastic.Migrations
 {
     [DbContext(typeof(DynasticContext))]
-    partial class DynasticContextModelSnapshot : ModelSnapshot
+    [Migration("20210228120349_AddMothersChildren")]
+    partial class AddMothersChildren
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
