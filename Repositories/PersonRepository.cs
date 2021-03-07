@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Dynastic.Domain;
 using Dynastic.DTO;
 using Dynastic.Models;
 using Microsoft.EntityFrameworkCore;
@@ -33,7 +34,7 @@ namespace Dynastic.Repositories
             return context.Set<Person>().Where(p => p.Id.Equals(id)).FirstOrDefaultAsync();
         }
 
-        public async Task<Person> GetTree(Guid id)
+        public async Task<Tree> GetTree(Guid id)
         {
             // TODO: Optimize
             var head = await context.Set<Person>()
@@ -49,7 +50,7 @@ namespace Dynastic.Repositories
                 .Include(p => p.Relationships)
                 .ThenInclude(r => r.Partner)
                 .FirstOrDefaultAsync();
-            return head;
+            return new Tree(head);
         }
 
         public async Task<Relationship> AddRelationship(Guid personId, Guid partnerId)

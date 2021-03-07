@@ -45,7 +45,8 @@ namespace Dynastic.Controllers
         [HttpGet("{id}/Tree")]
         public async Task<ActionResult<Person>> GetTree(string id)
         {
-            return Ok(await personRepository.GetTree(new Guid(id)));
+            var tree = await personRepository.GetTree(new Guid(id));
+            return Ok(tree);
         }
     }
 }
