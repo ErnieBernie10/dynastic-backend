@@ -2,7 +2,7 @@
 
 namespace Dynastic.Migrations
 {
-    public partial class AddMothersChildren : Migration
+    public partial class ReverseRelations : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

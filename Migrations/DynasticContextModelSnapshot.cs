@@ -85,6 +85,21 @@ namespace Dynastic.Migrations
                     b.ToTable("People");
                 });
 
+            modelBuilder.Entity("Dynastic.Models.Relationship", b =>
+                {
+                    b.Property<Guid>("PersonId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("PartnerId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("PersonId", "PartnerId");
+
+                    b.HasIndex("PartnerId");
+
+                    b.ToTable("Relationships");
+                });
+
             modelBuilder.Entity("Dynastic.Models.Dynasty", b =>
                 {
                     b.HasOne("Dynastic.Models.Person", "Head")
@@ -113,6 +128,25 @@ namespace Dynastic.Migrations
                     b.Navigation("Mother");
                 });
 
+            modelBuilder.Entity("Dynastic.Models.Relationship", b =>
+                {
+                    b.HasOne("Dynastic.Models.Person", "Partner")
+                        .WithMany()
+                        .HasForeignKey("PartnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Dynastic.Models.Person", "Person")
+                        .WithMany("Relationships")
+                        .HasForeignKey("PersonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Partner");
+
+                    b.Navigation("Person");
+                });
+
             modelBuilder.Entity("Dynastic.Models.Dynasty", b =>
                 {
                     b.Navigation("Members");
@@ -123,6 +157,8 @@ namespace Dynastic.Migrations
                     b.Navigation("FathersChildren");
 
                     b.Navigation("MothersChildren");
+
+                    b.Navigation("Relationships");
                 });
 #pragma warning restore 612, 618
         }

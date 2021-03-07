@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Dynastic.Migrations
 {
     [DbContext(typeof(DynasticContext))]
-    [Migration("20210228082021_NullableParents")]
-    partial class NullableParents
+    [Migration("20210307100503_ReverseRelations")]
+    partial class ReverseRelations
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -87,6 +87,21 @@ namespace Dynastic.Migrations
                     b.ToTable("People");
                 });
 
+            modelBuilder.Entity("Dynastic.Models.Relationship", b =>
+                {
+                    b.Property<Guid>("PersonId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("PartnerId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("PersonId", "PartnerId");
+
+                    b.HasIndex("PartnerId");
+
+                    b.ToTable("Relationships");
+                });
+
             modelBuilder.Entity("Dynastic.Models.Dynasty", b =>
                 {
                     b.HasOne("Dynastic.Models.Person", "Head")
@@ -103,16 +118,35 @@ namespace Dynastic.Migrations
                         .HasForeignKey("DynastyId");
 
                     b.HasOne("Dynastic.Models.Person", "Father")
-                        .WithMany("Children")
+                        .WithMany("FathersChildren")
                         .HasForeignKey("FatherId");
 
                     b.HasOne("Dynastic.Models.Person", "Mother")
-                        .WithMany()
+                        .WithMany("MothersChildren")
                         .HasForeignKey("MotherId");
 
                     b.Navigation("Father");
 
                     b.Navigation("Mother");
+                });
+
+            modelBuilder.Entity("Dynastic.Models.Relationship", b =>
+                {
+                    b.HasOne("Dynastic.Models.Person", "Partner")
+                        .WithMany()
+                        .HasForeignKey("PartnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Dynastic.Models.Person", "Person")
+                        .WithMany("Relationships")
+                        .HasForeignKey("PersonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Partner");
+
+                    b.Navigation("Person");
                 });
 
             modelBuilder.Entity("Dynastic.Models.Dynasty", b =>
@@ -122,7 +156,11 @@ namespace Dynastic.Migrations
 
             modelBuilder.Entity("Dynastic.Models.Person", b =>
                 {
-                    b.Navigation("Children");
+                    b.Navigation("FathersChildren");
+
+                    b.Navigation("MothersChildren");
+
+                    b.Navigation("Relationships");
                 });
 #pragma warning restore 612, 618
         }

@@ -34,6 +34,13 @@ namespace Dynastic.Controllers
             var person = await personRepository.Create(model.Adapt<Person>());
             return CreatedAtAction(nameof(GetPerson), new { id =  person.Id }, person);
         }
+
+        [HttpPost("{id}/relationships")]
+        public async Task<ActionResult<Relationship>> PostRelationsship(string id, CreateRelationshipDTO model)
+        {
+            var relationship = await personRepository.AddRelationship(new Guid(id), new Guid(model.Person));
+            return CreatedAtAction(nameof(GetPerson), new { id = relationship.Person.Id }, relationship);
+        } 
         
         [HttpGet("{id}/Tree")]
         public async Task<ActionResult<Person>> GetTree(string id)
