@@ -14,6 +14,7 @@ namespace Dynastic.Architecture.Models
         public Guid? MotherId { get; set; }
         public Person Father { get; set; }
         public Guid? FatherId { get; set; }
+        public DateTime BirthDate { get; set; }
         public List<Relationship> Relationships { get; set; }
         [JsonIgnore]
         public virtual List<Person> MothersChildren { get; set; }

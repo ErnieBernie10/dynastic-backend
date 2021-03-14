@@ -10,23 +10,23 @@ namespace Dynastic.Architecture.Repositories
 {
     public class DynastyRepository : IRepository<Dynasty>
     {
-        private readonly DynasticContext DynasticContext;
+        private readonly DynasticContext dynasticContext;
 
-        public DynastyRepository(DynasticContext DynasticContext)
+        public DynastyRepository(DynasticContext dynasticContext)
         {
-            this.DynasticContext = DynasticContext;
+            this.dynasticContext = dynasticContext;
         }
 
         public Task<Dynasty> GetById(Guid id)
         {
-            return DynasticContext.Set<Dynasty>().Where(d => d.Id.Equals(id)).FirstOrDefaultAsync();
+            return dynasticContext.Set<Dynasty>().Where(d => d.Id.Equals(id)).FirstOrDefaultAsync();
         }
 
 
         public async Task<Dynasty> Create(Dynasty input)
         {
-            var query = DynasticContext.Add(input);
-            await DynasticContext.SaveChangesAsync();
+            var query = dynasticContext.Add(input);
+            await dynasticContext.SaveChangesAsync();
             return query.Entity;
         }
 

@@ -37,10 +37,16 @@ namespace Dynastic.Application.Common
                 List<Couple> couple = null;
                 if (person.Relationships != null)
                 {
-                    couple = person.Relationships.Select(partner => new Couple() { Partner = LoadPerson(partner.Partner), Children = person.Children.Where(c => partner.Partner.Children.Contains(c)).Select(p => LoadPerson(p)).ToList() }).ToList();
+                    couple = person.Relationships.Select(partner => new Couple()
+                    {
+                        Partner = LoadPerson(partner.Partner),
+                        Children = person.Children.Where(c => partner.Partner.Children.Contains(c))
+                            .Select(LoadPerson).ToList()
+                    }).ToList();
                     member.Relationships = couple;
                 }
             }
+
             return member;
         }
 

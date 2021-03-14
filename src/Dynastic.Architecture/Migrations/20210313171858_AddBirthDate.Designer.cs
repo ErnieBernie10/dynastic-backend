@@ -3,15 +3,17 @@ using System;
 using Dynastic.Architecture.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace Dynastic.Architecture.Migrations.Dynastic
+namespace Dynastic.Architecture.Migrations
 {
     [DbContext(typeof(DynasticContext))]
-    partial class DynasticContextModelSnapshot : ModelSnapshot
+    [Migration("20210313171858_AddBirthDate")]
+    partial class AddBirthDate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
