@@ -3,15 +3,17 @@ using System;
 using Dynastic.Architecture.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Dynastic.Architecture.Migrations.Dynastic
 {
     [DbContext(typeof(DynasticContext))]
-    partial class DynasticContextModelSnapshot : ModelSnapshot
+    [Migration("20210320161939_AddUserDynasty")]
+    partial class AddUserDynasty
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -27,9 +29,6 @@ namespace Dynastic.Architecture.Migrations.Dynastic
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
 
                     b.Property<Guid?>("HeadId")
                         .HasColumnType("uuid");
@@ -114,7 +113,7 @@ namespace Dynastic.Architecture.Migrations.Dynastic
                     b.Property<Guid>("DynastyId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("Id", "DynastyId");
+                    b.HasKey("Id");
 
                     b.HasIndex("DynastyId");
 

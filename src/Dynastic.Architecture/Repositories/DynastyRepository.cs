@@ -22,12 +22,24 @@ namespace Dynastic.Architecture.Repositories
             return dynasticContext.Set<Dynasty>().Where(d => d.Id.Equals(id)).FirstOrDefaultAsync();
         }
 
-
+        public async Task<List<Dynasty>> GetUserDynasties(string id)
+        {
+            return await dynasticContext.Set<UserDynasties>().Where(d => d.Id.Equals(id)).Include(d => d.Dynasty)
+                .Select(d => d.Dynasty).ToListAsync();
+        }
+        
         public async Task<Dynasty> Create(Dynasty input)
         {
             var query = dynasticContext.Add(input);
             await dynasticContext.SaveChangesAsync();
             return query.Entity;
+        }
+
+        public async Task<Dynasty> Create(string userId, Dynasty input)
+        {
+            var query = dynasticContext.Add(new UserDynasties() { Dynasty = input, Id = userId});
+            await dynasticContext.SaveChangesAsync();
+            return query.Entity.Dynasty;
         }
 
         public Task<Dynasty> Update(Dynasty input)

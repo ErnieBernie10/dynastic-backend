@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Dynastic.API.DTO;
 using Dynastic.Application.Common;
@@ -32,14 +34,30 @@ namespace Dynastic.API.Controllers
         [HttpGet("{id}/Tree")]
         public async Task<ActionResult<Person>> GetTree(string id)
         {
-            var person = await personRepository.GetPerson(new Guid(id));
-            return Ok(new Tree(person));
+            var dynasty = await dynastyRepository.GetById(new Guid(id));
+            if (dynasty is null)
+            {
+                return NotFound();
+            }
+            if (dynasty.Head is null)
+            {
+                return Ok();
+            }
+            return Ok(new Tree(dynasty.Head));
+        }
+
+        [HttpGet()]
+        public async Task<ActionResult<Dynasty>> GetDynastiesForUser()
+        {
+            var userId = User.Identity?.Name;
+            var dynasties = await dynastyRepository.GetUserDynasties(userId);
+            return Ok(dynasties);
         }
 
         [HttpPost()]
         public async Task<ActionResult<Dynasty>> PostDynasty(CreateDynastyDTO model)
         {
-            var dynasty = await dynastyRepository.Create(model.Adapt<Dynasty>());
+            var dynasty = await dynastyRepository.Create(User.Identity?.Name, model.Adapt<Dynasty>());
             return CreatedAtAction(nameof(GetDynasty), new { id = dynasty.Id }, dynasty);
         }
         

@@ -19,6 +19,7 @@ namespace Dynastic.Architecture.Models
             modelBuilder.Entity<Relationship>().HasKey(e => new { e.PersonId, e.PartnerId });
             modelBuilder.Entity<Relationship>().HasOne(p => p.Partner).WithMany().HasForeignKey(e => e.PartnerId);
             modelBuilder.Entity<Relationship>().HasOne(p => p.Person).WithMany(p => p.Relationships).HasForeignKey(e => e.PersonId);
+            modelBuilder.Entity<UserDynasties>().HasKey(ud => new {Id = ud.Id, DynastyId = ud.DynastyId});
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -29,5 +30,6 @@ namespace Dynastic.Architecture.Models
         public DbSet<Person> People { get; set; }
         public DbSet<Dynasty> Dynasties { get; set; }
         public DbSet<Relationship> Relationships { get; set; }
+        public DbSet<UserDynasties> UserDynasties { get; set; }
     }
 }
