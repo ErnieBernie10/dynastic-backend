@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Dynastic.Architecture.Migrations
 {
     [DbContext(typeof(DynasticContext))]
-    [Migration("20210313171858_AddBirthDate")]
-    partial class AddBirthDate
+    [Migration("20210327090639_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -29,6 +29,9 @@ namespace Dynastic.Architecture.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
 
                     b.Property<Guid?>("HeadId")
                         .HasColumnType("uuid");
@@ -105,6 +108,21 @@ namespace Dynastic.Architecture.Migrations
                     b.ToTable("Relationships");
                 });
 
+            modelBuilder.Entity("Dynastic.Architecture.Models.UserDynasties", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("DynastyId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id", "DynastyId");
+
+                    b.HasIndex("DynastyId");
+
+                    b.ToTable("UserDynasties");
+                });
+
             modelBuilder.Entity("Dynastic.Architecture.Models.Dynasty", b =>
                 {
                     b.HasOne("Dynastic.Architecture.Models.Person", "Head")
@@ -150,6 +168,17 @@ namespace Dynastic.Architecture.Migrations
                     b.Navigation("Partner");
 
                     b.Navigation("Person");
+                });
+
+            modelBuilder.Entity("Dynastic.Architecture.Models.UserDynasties", b =>
+                {
+                    b.HasOne("Dynastic.Architecture.Models.Dynasty", "Dynasty")
+                        .WithMany()
+                        .HasForeignKey("DynastyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Dynasty");
                 });
 
             modelBuilder.Entity("Dynastic.Architecture.Models.Dynasty", b =>

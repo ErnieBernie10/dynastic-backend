@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace Dynastic.Architecture.Migrations.Dynastic
+namespace Dynastic.Architecture.Migrations
 {
     [DbContext(typeof(DynasticContext))]
     partial class DynasticContextModelSnapshot : ModelSnapshot
@@ -53,7 +53,7 @@ namespace Dynastic.Architecture.Migrations.Dynastic
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("BirthDate")
+                    b.Property<DateTime?>("BirthDate")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime>("CreatedAt")

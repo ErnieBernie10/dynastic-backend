@@ -39,11 +39,7 @@ namespace Dynastic.API.Controllers
             {
                 return NotFound();
             }
-            if (dynasty.Head is null)
-            {
-                return Ok();
-            }
-            return Ok(new Tree(dynasty.Head));
+            return Ok(new Tree(dynasty).FlatTree);
         }
 
         [HttpGet()]
@@ -64,13 +60,23 @@ namespace Dynastic.API.Controllers
         [HttpPost("{id}/Members")]
         public async Task<ActionResult<Person>> PostPerson(string id, CreatePersonDTO model)
         {
-            var person = await personRepository.Create(model.Adapt<Person>());
-            var dynasty = await dynastyRepository.GetById(new Guid(id));
-            var ageComparison = dynasty.Head.BirthDate.CompareTo(person.BirthDate);
-            if (ageComparison > 0)
+            Guid? motherId = string.IsNullOrEmpty(model.MotherId) ? null : new Guid(model.MotherId);
+            Guid? fatherId = string.IsNullOrEmpty(model.FatherId) ? null : new Guid(model.FatherId);
+            var person = await personRepository.Create(new Person()
             {
-                dynasty.Head = person;
+                Firstname = model.Firstname,
+                Lastname = model.Lastname,
+                Middlename = model.Middlename,
+                BirthDate = model.BirthDate,
+                MotherId = motherId,
+                FatherId = fatherId
+            });
+            if (motherId is not null && fatherId is not null)
+            {
+                await personRepository.AddRelationship(motherId.Value, fatherId.Value);
             }
+            var dynasty = await dynastyRepository.GetById(new Guid(id));
+            dynasty.Members.Add(person);
             await dynastyRepository.Update(dynasty);
             
             return CreatedAtAction(nameof(GetTree), new { id =  person.Id }, person);

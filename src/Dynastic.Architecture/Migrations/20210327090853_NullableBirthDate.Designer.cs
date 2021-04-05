@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace Dynastic.Architecture.Migrations.Dynastic
+namespace Dynastic.Architecture.Migrations
 {
     [DbContext(typeof(DynasticContext))]
-    [Migration("20210320162327_AddUserDynastyKey")]
-    partial class AddUserDynastyKey
+    [Migration("20210327090853_NullableBirthDate")]
+    partial class NullableBirthDate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -29,6 +29,9 @@ namespace Dynastic.Architecture.Migrations.Dynastic
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
 
                     b.Property<Guid?>("HeadId")
                         .HasColumnType("uuid");
@@ -52,7 +55,7 @@ namespace Dynastic.Architecture.Migrations.Dynastic
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("BirthDate")
+                    b.Property<DateTime?>("BirthDate")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime>("CreatedAt")
@@ -113,7 +116,7 @@ namespace Dynastic.Architecture.Migrations.Dynastic
                     b.Property<Guid>("DynastyId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id", "DynastyId");
 
                     b.HasIndex("DynastyId");
 

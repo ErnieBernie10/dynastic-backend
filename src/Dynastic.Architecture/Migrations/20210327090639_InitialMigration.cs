@@ -17,6 +17,7 @@ namespace Dynastic.Architecture.Migrations
                     Lastname = table.Column<string>(type: "text", nullable: true),
                     MotherId = table.Column<Guid>(type: "uuid", nullable: true),
                     FatherId = table.Column<Guid>(type: "uuid", nullable: true),
+                    BirthDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     DynastyId = table.Column<Guid>(type: "uuid", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ModifiedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
@@ -44,6 +45,7 @@ namespace Dynastic.Architecture.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: true),
+                    Description = table.Column<string>(type: "text", nullable: true),
                     HeadId = table.Column<Guid>(type: "uuid", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ModifiedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
@@ -83,6 +85,24 @@ namespace Dynastic.Architecture.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "UserDynasties",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    DynastyId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserDynasties", x => new { x.Id, x.DynastyId });
+                    table.ForeignKey(
+                        name: "FK_UserDynasties_Dynasties_DynastyId",
+                        column: x => x.DynastyId,
+                        principalTable: "Dynasties",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Dynasties_HeadId",
                 table: "Dynasties",
@@ -108,6 +128,11 @@ namespace Dynastic.Architecture.Migrations
                 table: "Relationships",
                 column: "PartnerId");
 
+            migrationBuilder.CreateIndex(
+                name: "IX_UserDynasties_DynastyId",
+                table: "UserDynasties",
+                column: "DynastyId");
+
             migrationBuilder.AddForeignKey(
                 name: "FK_People_Dynasties_DynastyId",
                 table: "People",
@@ -125,6 +150,9 @@ namespace Dynastic.Architecture.Migrations
 
             migrationBuilder.DropTable(
                 name: "Relationships");
+
+            migrationBuilder.DropTable(
+                name: "UserDynasties");
 
             migrationBuilder.DropTable(
                 name: "People");

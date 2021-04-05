@@ -7,51 +7,56 @@ namespace Dynastic.Application.Common
 {
     public class Tree
     {
-        public Tree(Person dynasticHead)
+        public Dynasty Dynasty { get; set; }
+        public HashSet<Member> FlatTree { get; set; }
+        public HashSet<Member> NestedTree { get; set; }
+        public Tree(Dynasty dynasty)
         {
-            Loaded = new HashSet<Member>();
-            Member = LoadPerson(dynasticHead);
-        }
-
-        private Member LoadPerson(Person person)
-        {
-            Member member = null;
-            if (person == null) return null;
-            member = Loaded.FirstOrDefault(l => l.Id.Equals(person.Id));
-            if (member == null)
+            FlatTree = new HashSet<Member>();
+            NestedTree = new HashSet<Member>();
+            foreach (var person in dynasty.Members)
             {
-                member = new Member
+                FlatTree.Add(new Member()
                 {
                     Id = person.Id,
                     CreatedAt = person.CreatedAt,
                     ModifiedAt = person.ModifiedAt,
-                    Father = LoadPerson(person.Father),
-                    FatherId = person.FatherId,
-                    Mother = LoadPerson(person.Mother),
-                    MotherId = person.MotherId,
                     Firstname = person.Firstname,
                     Lastname = person.Lastname,
                     Middlename = person.Middlename,
-                };
-                Loaded.Add(member);
-                List<Couple> couple = null;
-                if (person.Relationships != null)
-                {
-                    couple = person.Relationships.Select(partner => new Couple()
-                    {
-                        Partner = LoadPerson(partner.Partner),
-                        Children = person.Children.Where(c => partner.Partner.Children.Contains(c))
-                            .Select(LoadPerson).ToList()
-                    }).ToList();
-                    member.Relationships = couple;
-                }
+                    MotherId = person.MotherId,
+                    FatherId = person.FatherId
+                });
             }
 
-            return member;
+            foreach (var member in FlatTree)
+            {
+                Relate(member);
+            }
         }
 
-        public Member Member { get; set; }
-        public Dynasty Dynasty { get; set; }
-        private HashSet<Member> Loaded { get; set; }
+        private void Relate(Member member)
+        {
+            var father = FlatTree.FirstOrDefault(p => p.Id.Equals(member.FatherId));
+            var mother = FlatTree.FirstOrDefault(p => p.Id.Equals(member.MotherId));
+            father?.AddChildWithPartner(member, mother);
+            mother?.AddChildWithPartner(member, father);
+            if (father is not null)
+            {
+                Relate(father);
+                member.Father = father;
+            }
+
+            if (mother is not null)
+            {
+                Relate(mother);
+                member.Mother = mother;
+            }
+
+            if (member.MotherId is null && member.FatherId is null)
+            {
+                NestedTree.Add(member);
+            }
+        }
     }
 }

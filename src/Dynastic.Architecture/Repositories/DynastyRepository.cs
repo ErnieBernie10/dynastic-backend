@@ -19,7 +19,7 @@ namespace Dynastic.Architecture.Repositories
 
         public Task<Dynasty> GetById(Guid id)
         {
-            return dynasticContext.Set<Dynasty>().Where(d => d.Id.Equals(id)).FirstOrDefaultAsync();
+            return dynasticContext.Set<Dynasty>().Where(d => d.Id.Equals(id)).Include(d => d.Members).FirstOrDefaultAsync();
         }
 
         public async Task<List<Dynasty>> GetUserDynasties(string id)
@@ -42,9 +42,11 @@ namespace Dynastic.Architecture.Repositories
             return query.Entity.Dynasty;
         }
 
-        public Task<Dynasty> Update(Dynasty input)
+        public async Task<Dynasty> Update(Dynasty input)
         {
-            throw new NotImplementedException();
+            var query = dynasticContext.Update(input);
+            await dynasticContext.SaveChangesAsync();
+            return query.Entity;
         }
 
         public Task<Dynasty> Delete(Dynasty input)
