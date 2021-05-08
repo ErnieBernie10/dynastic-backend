@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using Dynastic.Application.Common;
 using Newtonsoft.Json;
 
 namespace Dynastic.Architecture.Models
@@ -20,10 +21,28 @@ namespace Dynastic.Architecture.Models
         public virtual List<Person> MothersChildren { get; set; }
         [JsonIgnore]
         public virtual List<Person> FathersChildren { get; set; }
-
+        
         [NotMapped]
         public List<Person> Children => CombineChildren();
 
+        public Member ToMember(bool recurse = false)
+        {
+            return new()
+            {
+                Id = Id,
+                Firstname = Firstname,
+                Middlename = Middlename,
+                Lastname = Lastname,
+                BirthDate = BirthDate,
+                CreatedAt = CreatedAt,
+                ModifiedAt = ModifiedAt,
+                FatherId = FatherId,
+                MotherId = MotherId,
+                Father = recurse ? Father?.ToMember() : null,
+                Mother = recurse ? Mother?.ToMember() : null
+            };
+        }
+        
         private List<Person> CombineChildren()
         {
             var list = new List<Person>();

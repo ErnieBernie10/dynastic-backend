@@ -19,7 +19,11 @@ namespace Dynastic.Architecture.Repositories
 
         public Task<Dynasty> GetById(Guid id)
         {
-            return dynasticContext.Set<Dynasty>().Where(d => d.Id.Equals(id)).Include(d => d.Members).FirstOrDefaultAsync();
+            return dynasticContext.Set<Dynasty>()
+                .Where(d => d.Id.Equals(id))
+                .Include(d => d.Members)
+                .ThenInclude(m => m.Relationships)
+                .FirstOrDefaultAsync();
         }
 
         public async Task<List<Dynasty>> GetUserDynasties(string id)

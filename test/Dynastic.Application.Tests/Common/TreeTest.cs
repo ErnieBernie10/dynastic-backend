@@ -1,7 +1,6 @@
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using Dynastic.Application.Common;
-using Dynastic.Architecture.Models;
 using NUnit.Framework;
 
 namespace Dynastic.Application.Tests.Common
@@ -9,52 +8,67 @@ namespace Dynastic.Application.Tests.Common
     [TestFixture]
     public class TreeTest
     {
-        private Person jod;
-        private Person jad;
-        private Person sd;
-        private Person dd;
-        private Person gmd;
-        private Person gpd;
+        private Member jod;
+        private Member jad;
+        private Member sd;
+        private Member dd;
+        private Member gmd;
+        private Member gpd;
+        private Member bw;
+        private Member mw;
         
         [SetUp]
         protected void SetUp()
         {
-            gpd = new Person()
+            mw = new Member()
+            {
+                Id = Guid.NewGuid(),
+                Firstname = "Momma",
+                Lastname = "Wayne"
+            };
+            bw = new Member()
+            {
+                Id = Guid.NewGuid(),
+                Firstname = "Bruce",
+                Lastname = "Wayne"
+            };
+            
+            gpd = new Member()
             {
                 Id = Guid.NewGuid(),
                 Firstname = "Grandpa",
                 Lastname = "Doe",
                 BirthDate = new DateTime(1956, 6, 23)
             };
-            gmd = new Person()
+            gmd = new Member()
             {
                 Id = Guid.NewGuid(),
                 Firstname = "Grandma",
                 Lastname = "Doe",
                 BirthDate = new DateTime(1957, 3, 11)
             };
-            jod = new Person()
+            jod = new Member()
             {
                 Id = Guid.NewGuid(),
                 Firstname = "John",
                 Lastname = "Doe",
                 BirthDate = new DateTime(1970, 4, 4)
             };
-            jad = new Person()
+            jad = new Member()
             {
                 Id = Guid.NewGuid(),
                 Firstname = "Jane",
                 Lastname = "Doe",
                 BirthDate = new DateTime(1973, 2, 6)
             };
-            sd = new Person()
+            sd = new Member()
             {
                 Id = Guid.NewGuid(),
                 Firstname = "Son",
                 Lastname = "Doe",
                 BirthDate = new DateTime(1995, 5, 30)
             };
-            dd = new Person()
+            dd = new Member()
             {
                 Id = Guid.NewGuid(),
                 Firstname = "Daughter",
@@ -65,46 +79,6 @@ namespace Dynastic.Application.Tests.Common
             jod.FatherId = gpd.Id;
             jod.Mother = gmd;
             jod.MotherId = gmd.Id;
-            jod.Relationships = new List<Relationship>()
-            {
-                new()
-                {
-                    Partner = jad,
-                    PartnerId = jad.Id,
-                    Person = jod,
-                    PersonId = jod.Id
-                }
-            };
-            jad.Relationships = new List<Relationship>()
-            {
-                new()
-                {
-                    Partner = jod,
-                    PartnerId = jod.Id,
-                    Person = jad,
-                    PersonId = jad.Id
-                }
-            };
-            gpd.Relationships = new List<Relationship>()
-            {
-                new()
-                {
-                    Partner = gmd,
-                    PartnerId = gmd.Id,
-                    Person = gpd,
-                    PersonId = gpd.Id
-                }
-            };
-            gmd.Relationships = new List<Relationship>()
-            {
-                new()
-                {
-                    Partner = gpd,
-                    PartnerId = gpd.Id,
-                    Person = gmd,
-                    PersonId = gmd.Id
-                }
-            };
             sd.Father = jod;
             sd.FatherId = jod.Id;
             sd.Mother = jad;
@@ -113,46 +87,55 @@ namespace Dynastic.Application.Tests.Common
             dd.FatherId = jod.Id;
             dd.Mother = jad;
             dd.MotherId = jad.Id;
+            bw.Mother = mw;
+            bw.MotherId = mw.Id;
+            
         }
 
         [TestCase]
         public void When_Given_Dynasty_Expect_Nested_Tree_Length()
         {
-            var tree = new Tree(new Dynasty()
+            var tree = new Tree(new []
             {
-                Description = "Sample",
-                Name = "Doe",
-                Members = new List<Person>()
-                {
-                    gpd,
-                    gmd,
-                    jod,
-                    jad,
-                    sd,
-                    dd
-                }
+                jod,
+                jad,
+                gpd,
+                gmd,
+                sd,
+                dd,
+                bw,
+                mw
             });
-           Assert.AreEqual(3, tree.NestedTree.Count); 
+           Assert.AreEqual(2, tree.NestedTree.Count); 
         }
 
         [TestCase]
-        public void When_Given_Dynasty_Expect_Flat_Tree_Length()
+        public void When_Given_Dynasty_Expect_Depth()
         {
-            var tree = new Tree(new Dynasty()
+            var tree = new Tree(new []
             {
-                Description = "Sample",
-                Name = "Doe",
-                Members = new List<Person>()
-                {
-                    gpd,
-                    gmd,
-                    jod,
-                    jad,
-                    sd,
-                    dd
-                }
+                jod,
+                jad,
+                gpd,
+                gmd,
+                sd,
+                dd,
+                bw,
+                mw
             });
-           Assert.AreEqual(6, tree.FlatTree.Count); 
+            Assert.AreEqual(4, GetDepth(tree.NestedTree.First())); 
+        }
+
+        private int GetDepth(Member m)
+        {
+            var depth = 1;
+            if (m.Relationships.Count <= 0) return depth;
+            foreach (var child in m.Relationships.First().Children)
+            {
+                 depth += GetDepth(child);
+            }
+
+            return depth;
         }
     }
 }

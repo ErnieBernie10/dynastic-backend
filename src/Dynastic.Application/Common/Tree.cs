@@ -1,62 +1,76 @@
 using System.Collections.Generic;
 using System.Linq;
-using Dynastic.Architecture.Models;
 using Mapster;
 
 namespace Dynastic.Application.Common
 {
     public class Tree
     {
-        public Dynasty Dynasty { get; set; }
-        public HashSet<Member> FlatTree { get; set; }
-        public HashSet<Member> NestedTree { get; set; }
-        public Tree(Dynasty dynasty)
+        public HashSet<Member> FlatTree { get; }
+        public HashSet<Member> NestedTree { get; }
+        private HashSet<Member> Loaded;
+        public Tree(IEnumerable<Member> members)
         {
+            Loaded = new HashSet<Member>(members);
             FlatTree = new HashSet<Member>();
             NestedTree = new HashSet<Member>();
-            foreach (var person in dynasty.Members)
+            foreach (var person in Loaded)
             {
-                FlatTree.Add(new Member()
-                {
-                    Id = person.Id,
-                    CreatedAt = person.CreatedAt,
-                    ModifiedAt = person.ModifiedAt,
-                    Firstname = person.Firstname,
-                    Lastname = person.Lastname,
-                    Middlename = person.Middlename,
-                    MotherId = person.MotherId,
-                    FatherId = person.FatherId
-                });
-            }
-
-            foreach (var member in FlatTree)
-            {
-                Relate(member);
+                LoadPerson(person);
             }
         }
 
-        private void Relate(Member member)
+        private Member LoadPerson(Member person)
         {
-            var father = FlatTree.FirstOrDefault(p => p.Id.Equals(member.FatherId));
-            var mother = FlatTree.FirstOrDefault(p => p.Id.Equals(member.MotherId));
-            father?.AddChildWithPartner(member, mother);
-            mother?.AddChildWithPartner(member, father);
-            if (father is not null)
-            {
-                Relate(father);
-                member.Father = father;
-            }
-
-            if (mother is not null)
-            {
-                Relate(mother);
-                member.Mother = mother;
-            }
-
-            if (member.MotherId is null && member.FatherId is null)
+            var member = Loaded.FirstOrDefault(m => m.Id.Equals(person.Id));
+            if (person == null) return null;
+            if (person.FatherId is null && person.MotherId is null)
             {
                 NestedTree.Add(member);
             }
+            else
+            {
+                if (member is not null)
+                {
+                    // TODO : Optimize unnecessary recursive calls
+                    if (member.FatherId is not null)
+                    {
+                        member.Father = LoadPerson(Loaded.FirstOrDefault(p => p.Id.Equals(member.FatherId)));
+                    }
+
+                    if (member.MotherId is not null)
+                    {
+                        member.Mother = Loaded.FirstOrDefault(p => p.Id.Equals(member.MotherId));
+                    }
+                    NestedTree.Remove(member.Mother);
+                    member = AddChild(member, member.Mother, member.Father);
+                }
+            }
+
+            return member;
         }
+
+        private Member AddChild(Member child, Member mother, Member father)
+        {
+            if (mother is null)
+            {
+                child = AddChild(child, father);
+            } else if (father is null)
+            {
+                child = AddChild(child, mother);
+            }
+            else
+            {
+                father.AddChildWithPartner(child, mother);
+            }
+            return child;
+        }
+
+        private Member AddChild(Member member, Member parent)
+        {
+            parent.AddChildWithPartner(member, null);
+            return member;
+        }
+
     }
 }

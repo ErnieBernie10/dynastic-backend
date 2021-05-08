@@ -39,7 +39,7 @@ namespace Dynastic.API.Controllers
             {
                 return NotFound();
             }
-            return Ok(new Tree(dynasty).FlatTree);
+            return Ok(dynasty.ToTree().NestedTree);
         }
 
         [HttpGet()]

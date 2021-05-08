@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Dynastic.Application.Common;
 using Dynastic.Architecture.Models;
 
 namespace Dynastic.Architecture.Repositories

@@ -1,6 +1,6 @@
 using System;
 
-namespace Dynastic.Architecture.Models
+namespace Dynastic.Application.Common
 {
     public abstract class Base
     {
