@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
 using Dynastic.Application.Common;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using NUnit.Framework;
 
 namespace Dynastic.Application.Tests.Common

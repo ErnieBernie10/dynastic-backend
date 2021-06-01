@@ -6,24 +6,26 @@ namespace Dynastic.Application.Common
 {
     public class Tree
     {
-        public HashSet<Member> FlatTree { get; }
         public HashSet<Member> NestedTree { get; }
-        private HashSet<Member> Loaded;
+        public Dictionary<string, Member> Members { get; }
         public Tree(IEnumerable<Member> members)
         {
-            Loaded = new HashSet<Member>(members);
-            FlatTree = new HashSet<Member>();
+            Members = members.ToDictionary(m => m.Id.ToString(), m => m);
             NestedTree = new HashSet<Member>();
-            foreach (var person in Loaded)
+            InitializeNestedTree(Members);
+        }
+
+        private void InitializeNestedTree(Dictionary<string, Member> loaded)
+        {
+            foreach (var person in loaded)
             {
-                LoadPerson(person);
+                LoadPerson(person.Value);
             }
         }
 
         private Member LoadPerson(Member person)
         {
-            var member = Loaded.FirstOrDefault(m => m.Id.Equals(person.Id));
-            if (person == null) return null;
+            var member = Members[person.Id.ToString()];
             if (person.FatherId is null && person.MotherId is null)
             {
                 NestedTree.Add(member);
@@ -35,12 +37,12 @@ namespace Dynastic.Application.Common
                     // TODO : Optimize unnecessary recursive calls
                     if (member.FatherId is not null)
                     {
-                        member.Father = LoadPerson(Loaded.FirstOrDefault(p => p.Id.Equals(member.FatherId)));
+                        member.Father = LoadPerson(Members[person.FatherId.ToString()]);
                     }
 
                     if (member.MotherId is not null)
                     {
-                        member.Mother = Loaded.FirstOrDefault(p => p.Id.Equals(member.MotherId));
+                        member.Mother = Members[person.MotherId.ToString()];
                     }
                     NestedTree.Remove(member.Mother);
                     member = AddChild(member, member.Mother, member.Father);

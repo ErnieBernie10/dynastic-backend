@@ -4,7 +4,7 @@ namespace Dynastic.Application.Common
 {
     public abstract class Base
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; init; }
         public DateTime CreatedAt { get; set; }
         public DateTime ModifiedAt { get; set; }
         

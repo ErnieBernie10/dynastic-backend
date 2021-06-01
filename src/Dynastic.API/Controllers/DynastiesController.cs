@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -40,6 +41,21 @@ namespace Dynastic.API.Controllers
                 return NotFound();
             }
             return Ok(dynasty.ToTree().NestedTree);
+        }
+        
+        [HttpGet("{id}/FlatTree")]
+        public async Task<ActionResult<Person>> GetFlatTree(string id)
+        {
+            var dynasty = await dynastyRepository.GetById(new Guid(id));
+            if (dynasty is null)
+            {
+                return NotFound();
+            }
+
+            var tree = dynasty.ToTree();
+
+            
+            return Ok(tree.Adapt<FlatTreeDTO>());
         }
 
         [HttpGet()]

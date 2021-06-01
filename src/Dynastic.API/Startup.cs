@@ -72,6 +72,7 @@ namespace Dynastic.API
             }).AddLogging();
             services.AddScoped<DynastyRepository>();
             services.AddScoped<PersonRepository>();
+            MapsterConfig.Configure();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Dynastic.API_backend", Version = "v1" });
@@ -116,7 +117,6 @@ namespace Dynastic.API
                 options.Filters.Add(new AuthorizeFilter(policy));
             });
             
-            MapsterConfigs.Configure();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
