@@ -15,9 +15,15 @@ namespace Dynastic.API.Mapping.Converters
                 var member = pair.Value;
                 var memberDto = new BasicMemberDTO()
                 {
+                    Id = member.Id,
                     Firstname = member.Firstname,
                     Lastname = member.Lastname,
                     Middlename = member.Middlename,
+                    BirthDate = member.BirthDate,
+                    MotherId = member.MotherId,
+                    FatherId = member.FatherId,
+                    CreatedAt = member.CreatedAt,
+                    ModifiedAt = member.ModifiedAt,
                     Relationships = new List<BasicRelationshipDTO>()
                 };
 
@@ -41,9 +47,15 @@ namespace Dynastic.API.Mapping.Converters
                 {
                     res = new BasicMemberDTO()
                     {
+                        Id = parent.Id,
                         Firstname = parent.Firstname,
                         Lastname = parent.Lastname,
                         Middlename = parent.Middlename,
+                        MotherId = member.MotherId,
+                        FatherId = member.FatherId,
+                        BirthDate = parent.BirthDate,
+                        CreatedAt = parent.CreatedAt,
+                        ModifiedAt = parent.ModifiedAt,
                         Relationships = new List<BasicRelationshipDTO>()
                     };
                     res.Relationships.Add(new BasicRelationshipDTO()
