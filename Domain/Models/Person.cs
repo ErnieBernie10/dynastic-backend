@@ -9,11 +9,13 @@ namespace Dynastic.Domain.Models
     public class Person : Base
     {
         public string Firstname { get; set; }
-        public string Middlename { get; set; }
+        public string? Middlename { get; set; }
         public string Lastname { get; set; }
-        public Person Mother { get; set; }
+        [JsonIgnore]
+        public Person? Mother { get; set; }
         public Guid? MotherId { get; set; }
-        public Person Father { get; set; }
+        [JsonIgnore]
+        public Person? Father { get; set; }
         public Guid? FatherId { get; set; }
         public DateTime? BirthDate { get; set; }
         public List<Relationship> Relationships { get; set; }
@@ -23,14 +25,14 @@ namespace Dynastic.Domain.Models
         public virtual List<Person> FathersChildren { get; set; }
         
         [NotMapped]
-        public List<Person> Children => CombineChildren();
+        public List<Guid> Children => CombineChildren();
 
-        private List<Person> CombineChildren()
+        private List<Guid> CombineChildren()
         {
             var list = new List<Person>();
             list.AddRange(MothersChildren ?? new List<Person>());
             list.AddRange(FathersChildren ?? new List<Person>());
-            return list;
+            return list.Select(l => l.Id).ToList();
         }
     }
 }

@@ -29,7 +29,10 @@ namespace Dynastic.Architecture.Repositories
 
         public async Task<List<Dynasty>> GetUserDynasties(string id)
         {
-            return await dynasticContext.Set<UserDynasties>().Where(d => d.Id.Equals(id)).Include(d => d.Dynasty)
+            return await dynasticContext.Set<UserDynasties>()
+                .Where(d => d.Id.Equals(id))
+                .Include(d => d.Dynasty)
+                .ThenInclude(d => d.Members)
                 .Select(d => d.Dynasty).ToListAsync();
         }
 
