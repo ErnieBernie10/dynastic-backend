@@ -5,10 +5,11 @@ using System.Threading.Tasks;
 using Dynastic.Domain.Models;
 using System.Data;
 using Microsoft.EntityFrameworkCore;
+using Dynastic.Domain;
 
 namespace Dynastic.Architecture.Repositories
 {
-    public class DynastyRepository : IRepository<Dynasty>
+    public class DynastyRepository : IDynastyRepository
     {
         private readonly DynasticContext dynasticContext;
 
@@ -31,7 +32,7 @@ namespace Dynastic.Architecture.Repositories
             return await dynasticContext.Set<UserDynasties>().Where(d => d.Id.Equals(id)).Include(d => d.Dynasty)
                 .Select(d => d.Dynasty).ToListAsync();
         }
-        
+
         public async Task<Dynasty> Create(Dynasty input)
         {
             var query = dynasticContext.Add(input);
@@ -41,7 +42,7 @@ namespace Dynastic.Architecture.Repositories
 
         public async Task<Dynasty> Create(string userId, Dynasty input)
         {
-            var query = dynasticContext.Add(new UserDynasties() { Dynasty = input, Id = userId});
+            var query = dynasticContext.Add(new UserDynasties() { Dynasty = input, Id = userId });
             await dynasticContext.SaveChangesAsync();
             return query.Entity.Dynasty;
         }

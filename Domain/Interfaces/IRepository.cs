@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Dynastic.Domain.Common;
 using Dynastic.Domain.Models;
 
-namespace Dynastic.Architecture.Repositories
+namespace Dynastic.Domain
 {
     public interface IRepository<T> where T : Base
     {

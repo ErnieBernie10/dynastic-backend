@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Dynastic.Architecture.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -24,6 +25,10 @@ namespace Dynastic.Architecture
                     options.UseNpgsql(configuration.GetConnectionString("DynasticConnection"));
                 }
             }).AddLogging();
+            
+            services.AddScoped<IDynastyRepository, DynastyRepository>();
+            services.AddScoped<IPersonRepository, PersonRepository>();
+            
             return services;
         }
     }

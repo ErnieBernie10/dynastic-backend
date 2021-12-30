@@ -14,6 +14,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Dynastic.Architecture;
+using Dynastic.Application;
+using Dynastic.API.Services;
+using Dynastic.Domain.Services;
 
 namespace Dynastic.API
 {
@@ -60,10 +63,12 @@ namespace Dynastic.API
             });
             services.AddControllers();
 
-            services.AddScoped<DynastyRepository>();
-            services.AddScoped<PersonRepository>();
-
             services.AddArchitecture(Configuration, Environment.IsDevelopment());
+            services.AddApplication();
+
+            services.AddSingleton<ICurrentUserService, CurrentUserService>();
+
+            services.AddHttpContextAccessor();
 
             MapsterConfig.Configure();
             services.AddSwaggerGen(c =>
