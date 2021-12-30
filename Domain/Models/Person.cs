@@ -1,10 +1,10 @@
+using Dynastic.Domain.Common;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using Dynastic.Application.Common;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
-namespace Dynastic.Architecture.Models
+namespace Dynastic.Domain.Models
 {
     public class Person : Base
     {
@@ -25,24 +25,6 @@ namespace Dynastic.Architecture.Models
         [NotMapped]
         public List<Person> Children => CombineChildren();
 
-        public Member ToMember(bool recurse = false)
-        {
-            return new()
-            {
-                Id = Id,
-                Firstname = Firstname,
-                Middlename = Middlename,
-                Lastname = Lastname,
-                BirthDate = BirthDate,
-                CreatedAt = CreatedAt,
-                ModifiedAt = ModifiedAt,
-                FatherId = FatherId,
-                MotherId = MotherId,
-                Father = recurse ? Father?.ToMember() : null,
-                Mother = recurse ? Mother?.ToMember() : null
-            };
-        }
-        
         private List<Person> CombineChildren()
         {
             var list = new List<Person>();

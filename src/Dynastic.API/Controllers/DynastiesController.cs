@@ -5,7 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Dynastic.API.DTO;
 using Dynastic.Application.Common;
-using Dynastic.Architecture.Models;
+using Dynastic.Domain.Models;
 using Dynastic.Architecture.Repositories;
 using Mapster;
 using Microsoft.AspNetCore.Authorization;
@@ -35,27 +35,29 @@ namespace Dynastic.API.Controllers
         [HttpGet("{id}/Tree")]
         public async Task<ActionResult<Person>> GetTree(string id)
         {
-            var dynasty = await dynastyRepository.GetById(new Guid(id));
-            if (dynasty is null)
-            {
-                return NotFound();
-            }
-            return Ok(dynasty.ToTree().NestedTree);
+            //var dynasty = await dynastyRepository.GetById(new Guid(id));
+            //if (dynasty is null)
+            //{
+            //    return NotFound();
+            //}
+            //return Ok(dynasty.ToTree().NestedTree);
+            throw new NotImplementedException();
         }
         
         [HttpGet("{id}/FlatTree")]
         public async Task<ActionResult<Person>> GetFlatTree(string id)
         {
-            var dynasty = await dynastyRepository.GetById(new Guid(id));
-            if (dynasty is null)
-            {
-                return NotFound();
-            }
+            //var dynasty = await dynastyRepository.GetById(new Guid(id));
+            //if (dynasty is null)
+            //{
+            //    return NotFound();
+            //}
 
-            var tree = dynasty.ToTree();
+            //var tree = dynasty.ToTree();
 
-            
-            return Ok(tree.Adapt<FlatTreeDTO>());
+
+            //return Ok(tree.Adapt<FlatTreeDTO>());
+            throw new NotImplementedException();
         }
 
         [HttpGet()]

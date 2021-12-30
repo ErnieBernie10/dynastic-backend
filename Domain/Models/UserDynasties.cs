@@ -1,6 +1,6 @@
 using System;
 
-namespace Dynastic.Architecture.Models
+namespace Dynastic.Domain.Models
 {
     public class UserDynasties
     {

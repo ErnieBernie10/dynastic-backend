@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Dynastic.Architecture.Models;
+using Dynastic.Domain.Models;
 using System.Data;
 using Microsoft.EntityFrameworkCore;
 

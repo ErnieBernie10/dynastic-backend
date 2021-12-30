@@ -1,25 +1,19 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using Dynastic.API.Mapping;
-using Dynastic.Architecture.Models;
 using Dynastic.Architecture.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Dynastic.Architecture;
 
 namespace Dynastic.API
 {
@@ -38,7 +32,8 @@ namespace Dynastic.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var auth0Authentication = Configuration.GetSection("Authentication:Auth0");
+            var domain = Configuration.GetSection("Authentication:Auth0:Domain").Value;
+            var audience = Configuration.GetSection("Authentication:Auth0:Audience").Value;
             services.AddCors(options =>
             {
                 options.AddPolicy(name: WEB_ORIGIN, builder =>
@@ -52,8 +47,8 @@ namespace Dynastic.API
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(options =>
             {
-                options.Authority = auth0Authentication["Domain"];
-                options.Audience = auth0Authentication["Audience"];
+                options.Authority = domain;
+                options.Audience = audience;
                 if (Environment.IsDevelopment())
                 {
                     options.RequireHttpsMetadata = false;
@@ -63,15 +58,13 @@ namespace Dynastic.API
                     NameClaimType = ClaimTypes.NameIdentifier
                 };
             });
-            services.AddControllers()
-                // .AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve);
-                .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
-            services.AddDbContext<DynasticContext>(options =>
-            {
-                options.UseNpgsql(Configuration.GetConnectionString("DynasticConnection"));
-            }).AddLogging();
+            services.AddControllers();
+
             services.AddScoped<DynastyRepository>();
             services.AddScoped<PersonRepository>();
+
+            services.AddArchitecture(Configuration);
+
             MapsterConfig.Configure();
             services.AddSwaggerGen(c =>
             {
@@ -89,7 +82,7 @@ namespace Dynastic.API
                             {
                                 { "openid", "Open Id" }
                             },
-                            AuthorizationUrl = new Uri(auth0Authentication["Domain"] + "authorize?audience=" + auth0Authentication["Audience"])
+                            AuthorizationUrl = new Uri(domain + "/authorize?audience=" + audience)
                         }
                     }
                 });
@@ -131,6 +124,7 @@ namespace Dynastic.API
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Dynastic.API_backend v1");
                     c.OAuthClientId(Configuration["Authentication:Auth0:ClientId"]);
                 });
+                //app.UseInMemoryDatabase();
             }
 
             app.UseCors(WEB_ORIGIN);

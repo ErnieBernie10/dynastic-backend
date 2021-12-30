@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Dynastic.API.DTO;
-using Dynastic.Architecture.Models;
+using Dynastic.Domain.Models;
 using Dynastic.Architecture.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

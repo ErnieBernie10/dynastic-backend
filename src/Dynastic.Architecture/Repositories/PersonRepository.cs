@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Dynastic.Architecture.Models;
+using Dynastic.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Dynastic.Architecture.Repositories

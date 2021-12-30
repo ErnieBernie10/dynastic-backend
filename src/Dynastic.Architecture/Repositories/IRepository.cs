@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
-using Dynastic.Application.Common;
-using Dynastic.Architecture.Models;
+using Dynastic.Domain.Common;
+using Dynastic.Domain.Models;
 
 namespace Dynastic.Architecture.Repositories
 {

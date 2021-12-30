@@ -1,7 +1,8 @@
+using Dynastic.Domain.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace Dynastic.Application.Common {
     public class Member : Base {

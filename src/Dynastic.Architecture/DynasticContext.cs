@@ -1,8 +1,9 @@
 using System;
+using Dynastic.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-namespace Dynastic.Architecture.Models
+namespace Dynastic.Architecture
 {
     public class DynasticContext : DbContext
     {
