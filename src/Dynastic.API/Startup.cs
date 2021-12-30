@@ -63,7 +63,7 @@ namespace Dynastic.API
             services.AddScoped<DynastyRepository>();
             services.AddScoped<PersonRepository>();
 
-            services.AddArchitecture(Configuration);
+            services.AddArchitecture(Configuration, Environment.IsDevelopment());
 
             MapsterConfig.Configure();
             services.AddSwaggerGen(c =>
@@ -124,7 +124,6 @@ namespace Dynastic.API
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Dynastic.API_backend v1");
                     c.OAuthClientId(Configuration["Authentication:Auth0:ClientId"]);
                 });
-                //app.UseInMemoryDatabase();
             }
 
             app.UseCors(WEB_ORIGIN);

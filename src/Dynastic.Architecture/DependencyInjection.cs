@@ -11,11 +11,18 @@ namespace Dynastic.Architecture
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddArchitecture(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddArchitecture(this IServiceCollection services, IConfiguration configuration, bool isDevelopment)
         {
             services.AddDbContext<DynasticContext>(options =>
             {
-                options.UseNpgsql(configuration.GetConnectionString("DynasticConnection"));
+                if (isDevelopment)
+                {
+                    options.UseInMemoryDatabase("Dynastic");
+                }
+                else
+                {
+                    options.UseNpgsql(configuration.GetConnectionString("DynasticConnection"));
+                }
             }).AddLogging();
             return services;
         }
