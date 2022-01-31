@@ -16,19 +16,20 @@ namespace Dynastic.Architecture
         {
             services.AddDbContext<DynasticContext>(options =>
             {
-                if (isDevelopment)
-                {
-                    options.UseInMemoryDatabase("Dynastic");
-                }
-                else
-                {
-                    options.UseNpgsql(configuration.GetConnectionString("DynasticConnection"));
-                }
+                // if (isDevelopment)
+                // {
+                //     options.UseInMemoryDatabase("Dynastic");
+                // }
+                // else
+                // {
+                //     options.UseNpgsql(configuration.GetConnectionString("DynasticConnection"));
+                // }
+                options.UseInMemoryDatabase("Dynastic");
             }).AddLogging();
-            
+
             services.AddScoped<IDynastyRepository, DynastyRepository>();
             services.AddScoped<IPersonRepository, PersonRepository>();
-            
+
             return services;
         }
     }

@@ -35,8 +35,8 @@ namespace Dynastic.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var domain = Configuration.GetSection("Authentication:Auth0:Domain").Value;
-            var audience = Configuration.GetSection("Authentication:Auth0:Audience").Value;
+            var domain = Configuration.GetSection("AUTH0_DOMAIN").Value;
+            var audience = Configuration.GetSection("AUTH0_AUDIENCE").Value;
             services.AddCors(options =>
             {
                 options.AddPolicy(name: WEB_ORIGIN, builder =>
@@ -114,7 +114,7 @@ namespace Dynastic.API
 
                 options.Filters.Add(new AuthorizeFilter(policy));
             });
-            
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
