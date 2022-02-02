@@ -52,6 +52,7 @@ namespace Dynastic.API
             {
                 options.Authority = domain;
                 options.Audience = audience;
+                options.RequireHttpsMetadata = false;
                 if (Environment.IsDevelopment())
                 {
                     options.RequireHttpsMetadata = false;
